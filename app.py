@@ -136,8 +136,10 @@ def predict():
     waktu_batas = pd.to_datetime(data_interpolated['createdAt'].iloc[-1])
     tanggal_testing = pd.date_range(start=waktu_batas, periods=len(y_test) + 1, freq='D')[1:]
 
-    graph_html = plot_predictions_with_dates(y_test, y_pred_test, features, tanggal_testing)
+    graph_html = plot_predictions_with_dates(y_test, np.array(y_pred_test), features, tanggal_testing)
 
+    print("Predicted Values (Test):", y_pred_test)
+    print("Predicted Values (Train):", y_pred_train)
     return render_template('predict.html', results=results, graph_html=graph_html)
 
 if __name__ == '__main__':

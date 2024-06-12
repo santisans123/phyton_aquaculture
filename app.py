@@ -20,16 +20,15 @@ def download_and_save_csv():
     cursor = collection.find()
     data = pd.DataFrame(list(cursor))
 
-    # Ensure 'Waktu' is a datetime column
+
     if 'createdAt' in data.columns:
         data['createdAt'] = pd.to_datetime(data['createdAt'], errors='coerce')
     else:
         raise KeyError("'createdAt' column is missing from the data")
 
-    # Drop rows where 'Waktu' could not be parsed
     data = data.dropna(subset=['createdAt'])
 
-    # Save data to a CSV file
+
     csv_file_path = 'data.csv'
     data.to_csv(csv_file_path, index=False)
     return csv_file_path
@@ -53,7 +52,7 @@ def create_dataset(data, time_steps=1):
     X, y = [], []
     for i in range(len(data) - time_steps):
         X.append(data[i:(i + time_steps), :])
-        y.append(data[i + time_steps, :])  # Mengambil seluruh kolom fitur sebagai target
+        y.append(data[i + time_steps, :]) 
     return np.array(X), np.array(y)
 
 def calculate_performance(y_true, y_pred):
@@ -73,7 +72,7 @@ def plot_predictions_with_dates(y_true, y_pred, features, dates):
         title='LSTM Time Series Prediction',
         xaxis_title='Time',
         yaxis_title='Values',
-        width=1200,  # Set the width of the plot to 1200 pixels
+        width=1200,  
     )
     graph_html = fig.to_html(full_html=False)
     return graph_html
@@ -93,10 +92,10 @@ def train():
 
     model = Sequential()
     model.add(LSTM(units=50, activation='relu', input_shape=(X_train.shape[1], X_train.shape[2])))
-    model.add(Dense(units=4))  # Mengubah units menjadi 4
+    model.add(Dense(units=4))  
     model.compile(optimizer='adam', loss='mean_squared_error')
 
-    print(model.summary())  # Cetak ringkasan model untuk verifikasi
+    print(model.summary()) 
 
     model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_test, y_test))
 
@@ -133,7 +132,7 @@ def predict():
 
     features = ['salinity', 'acidity', 'oxygen', 'temperature']
 
-    # Generate dates for the testing data
+ 
     waktu_batas = pd.to_datetime(data_interpolated['createdAt'].iloc[-1])
     tanggal_testing = pd.date_range(start=waktu_batas, periods=len(y_test) + 1, freq='D')[1:]
 
